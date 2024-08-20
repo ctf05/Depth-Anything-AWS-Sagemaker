@@ -1,0 +1,10 @@
+gradio_imageslider
+gradio
+torch
+torchvision
+opencv-python
+matplotlib
+huggingface_hub
+torch
+opencv-python-headless
+numpy
