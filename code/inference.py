@@ -15,9 +15,18 @@ def model_fn(model_dir):
     return model
 
 def input_fn(request_body, request_content_type):
-    if request_content_type == 'application/octet-stream':
-        # Decode image and store original size
-        input_image = cv2.imdecode(np.frombuffer(request_body, np.uint8), cv2.IMREAD_COLOR)
+    if request_content_type == 'application/json':
+        # Parse JSON to get base64 string
+        input_data = json.loads(request_body)
+        if 'body' not in input_data or 'image' not in input_data['body']:
+            raise ValueError("Missing 'body' or 'image' field in input JSON.")
+
+        # Extract the base64 image string
+        base64_image = input_data['body']['image']
+        # Decode base64 string to image
+        image_bytes = base64.b64decode(base64_image)
+        input_image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+
         original_size = (input_image.shape[1], input_image.shape[0])  # (width, height)
         # Resize to 400x400
         resized_image = cv2.resize(input_image, (400, 400))
@@ -44,6 +53,6 @@ def output_fn(prediction, accept):
         # Encode resized depth map as PNG and then convert to base64
         _, buffer = cv2.imencode('.png', resized_depth_map)
         base64_image = base64.b64encode(buffer).decode('utf-8')
-        # Return the base64 encoded image in JSON format
-        return json.dumps({'depth_map_base64': base64_image})
+        # Return the base64 encoded depth map in the same format as input, but with 'depthmap' instead of 'image'
+        return json.dumps({'body': {'depthmap': base64_image}})
     raise ValueError(f"Unsupported accept type: {accept}")
