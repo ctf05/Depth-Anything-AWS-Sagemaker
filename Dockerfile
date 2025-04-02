@@ -29,8 +29,8 @@ RUN pip install -e .
 
 WORKDIR /opt/ml/code
 
-# Copy inference.py file
-COPY inference.py /opt/ml/code/inference.py
+# Copy code directory containing inference.py
+COPY code/ /opt/ml/code/
 
 # Create model directory and download the model weights
 RUN mkdir -p /opt/ml/model/checkpoints
