@@ -8,3 +8,4 @@ huggingface_hub
 torch
 opencv-python-headless
 numpy
+requests
