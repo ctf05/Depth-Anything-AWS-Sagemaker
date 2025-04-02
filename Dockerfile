@@ -25,7 +25,7 @@ WORKDIR /opt/ml/code
 RUN git clone https://github.com/LiheYoung/Depth-Anything /opt/ml/code/depth-anything
 WORKDIR /opt/ml/code/depth-anything
 # Install depth-anything
-RUN pip install -e .
+RUN pip install -r requirements.txt
 
 WORKDIR /opt/ml/code
 
