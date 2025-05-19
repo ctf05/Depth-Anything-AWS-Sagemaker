@@ -1,8 +1,5 @@
 FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
 
-ARG HF_TOKEN
-ENV HF_TOKEN=${HF_TOKEN}
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3-pip \
@@ -37,7 +34,7 @@ COPY code/ /opt/ml/code/
 
 # Create model directory and download the model weights
 RUN mkdir -p /opt/ml/model/checkpoints
-RUN wget --header="Authorization: bearer ${HF_TOKEN}" -O /opt/ml/model/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/shariqfarooq/Depth-Anything/resolve/main/checkpoints/depth_anything_v2_vits.pth
+RUN wget -O /opt/ml/model/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=TRUE
