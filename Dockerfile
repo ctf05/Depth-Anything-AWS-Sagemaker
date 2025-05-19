@@ -12,6 +12,12 @@ RUN mkdir -p /opt/ml/code /opt/ml/model
 # Set the working directory
 WORKDIR /opt/ml/code
 
+# Copy requirements.txt
+COPY requirements.txt /opt/ml/code/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy code directory containing inference.py and depth_anything_v2
 COPY code/ /opt/ml/code/
 
