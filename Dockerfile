@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     git \
     wget \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -12,7 +14,7 @@ RUN pip install --no-cache-dir \
     sagemaker-pytorch-inference \
     matplotlib \
     scikit-image \
-    opencv-python \
+    opencv-python-headless \
     pillow
 
 # Set up directories
