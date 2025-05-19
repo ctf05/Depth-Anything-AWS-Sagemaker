@@ -3,19 +3,8 @@ FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
-    git \
     wget \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-RUN pip install --no-cache-dir  \
-    sagemaker-pytorch-inference \
-    matplotlib \
-    scikit-image \
-    opencv-python-headless \
-    pillow
 
 # Set up directories
 RUN mkdir -p /opt/ml/code /opt/ml/model
@@ -23,15 +12,7 @@ RUN mkdir -p /opt/ml/code /opt/ml/model
 # Set the working directory
 WORKDIR /opt/ml/code
 
-# Clone depth anything repository
-RUN git clone https://github.com/LiheYoung/Depth-Anything /opt/ml/code/depth-anything
-WORKDIR /opt/ml/code/depth-anything
-# Install depth-anything
-RUN pip install -r requirements.txt
-
-WORKDIR /opt/ml/code
-
-# Copy code directory containing inference.py
+# Copy code directory containing inference.py and depth_anything_v2
 COPY code/ /opt/ml/code/
 
 # Create model directory and download the model weights
