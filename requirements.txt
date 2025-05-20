@@ -9,3 +9,4 @@ torch
 opencv-python-headless
 numpy
 requests
+xformers
