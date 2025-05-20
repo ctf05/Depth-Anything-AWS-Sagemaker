@@ -20,9 +20,9 @@ COPY requirements.txt /opt/ml/code/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Clone the Depth-Anything-V2 repository
-RUN git clone https://github.com/DepthAnything/Depth-Anything-V2.git /opt/ml/code/Depth-Anything-V2
+RUN git clone https://github.com/ctf05/Depth-Anything-V2.git /opt/ml/code/Depth-Anything-V2
 WORKDIR /opt/ml/code/Depth-Anything-V2
-RUN pip install -e .
+RUN pip install -r requirements.txt
 WORKDIR /opt/ml/code
 
 # Copy inference.py
