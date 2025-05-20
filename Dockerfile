@@ -4,6 +4,7 @@ FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
 RUN apt-get update && apt-get install -y \
     python3-pip \
     wget \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up directories
@@ -18,8 +19,14 @@ COPY requirements.txt /opt/ml/code/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy code directory containing inference.py and depth_anything_v2
-COPY code/ /opt/ml/code/
+# Clone the Depth-Anything-V2 repository
+RUN git clone https://github.com/DepthAnything/Depth-Anything-V2.git /opt/ml/code/Depth-Anything-V2
+WORKDIR /opt/ml/code/Depth-Anything-V2
+RUN pip install -e .
+WORKDIR /opt/ml/code
+
+# Copy inference.py
+COPY code/inference.py /opt/ml/code/
 
 # Create model directory and download the model weights
 RUN mkdir -p /opt/ml/model/checkpoints
