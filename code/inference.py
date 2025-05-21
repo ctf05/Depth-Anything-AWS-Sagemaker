@@ -2,6 +2,7 @@ import json
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'site-packages'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Depth-Anything-V2'))
 import torch
 import requests
 import cv2
