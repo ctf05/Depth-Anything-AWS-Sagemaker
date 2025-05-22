@@ -1,7 +1,7 @@
 FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
+    nginx \
     python3-pip \
     wget \
     git \
@@ -10,38 +10,37 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up directories
-RUN mkdir -p /opt/ml/code /opt/ml/model
+RUN pip install --no-cache-dir \
+    flask \
+    gunicorn \
+    torch \
+    torchvision \
+    opencv-python-headless \
+    numpy \
+    requests \
+    sagemaker-pytorch-inference
 
-# Set the working directory
-WORKDIR /opt/ml/code
+RUN mkdir -p /opt/program
+WORKDIR /opt/program
 
-# Copy requirements.txt
-COPY requirements.txt /opt/ml/code/
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Clone the Depth-Anything-V2 repository
-RUN git clone https://github.com/ctf05/Depth-Anything-V2.git /opt/ml/code/Depth-Anything-V2
-WORKDIR /opt/ml/code/Depth-Anything-V2
+RUN git clone https://github.com/ctf05/Depth-Anything-V2.git /opt/program/Depth-Anything-V2
+WORKDIR /opt/program/Depth-Anything-V2
 RUN pip install -r requirements.txt
-WORKDIR /opt/ml/code
+WORKDIR /opt/program
 
-# Copy inference.py
-COPY code/inference.py /opt/ml/code/
+RUN mkdir -p /opt/program/checkpoints
+RUN wget -O /opt/program/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
 
-# Create model directory and download the model weights
-RUN mkdir -p /opt/ml/model/checkpoints
-RUN wget -O /opt/ml/model/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
+COPY predictor.py wsgi.py nginx.conf /opt/program/
 
-# Set environment variables
+COPY serve /opt/program/
+RUN sed -i 's/\r$//' /opt/program/serve && \
+    chmod +x /opt/program/serve
+
 ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE
-ENV PATH="/opt/ml/code:${PATH}"
+ENV PATH="/opt/program:${PATH}"
 
-# Expose port 8080 for SageMaker
 EXPOSE 8080
 
-# Set the entrypoint
-ENTRYPOINT ["python", "-m", "inference"]
+ENTRYPOINT ["/opt/program/serve"]

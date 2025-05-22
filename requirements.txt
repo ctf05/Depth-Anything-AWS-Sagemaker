@@ -1,10 +1,9 @@
-gradio_imageslider
-gradio
 torch
 torchvision
 matplotlib
-huggingface_hub
-torch
 opencv-python-headless
 numpy
 requests
+flask
+gunicorn
+sagemaker-pytorch-inference
