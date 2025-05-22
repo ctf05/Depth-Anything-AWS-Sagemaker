@@ -29,7 +29,7 @@ RUN pip install -r requirements.txt
 WORKDIR /opt/program
 
 RUN mkdir -p /opt/program/checkpoints
-RUN wget -O /opt/program/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth
+RUN wget -O /opt/program/checkpoints/depth_anything_v2_vits.pth https://huggingface.co/depth-anything/Depth-Anything-V2-Small/resolve/main/depth_anything_v2_vits.pth
 
 COPY predictor.py wsgi.py nginx.conf /opt/program/
 
